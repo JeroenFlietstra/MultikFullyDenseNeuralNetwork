@@ -17,8 +17,10 @@ private lateinit var x: D3Array<Float>
 private lateinit var y: D1Array<Float>
 
 fun main() {
+    // Create data.
     generateData(1000)
 
+    // Split data (70% train data, 30% test data).
     val total = x.shape[0]
     val limit = (total * 0.7).toInt()
     val trainX = x[Slice(0, limit, 1)].toDimensionArray()
@@ -26,19 +28,27 @@ fun main() {
     val trainY = y[Slice(0, limit, 1)].toDimensionArray()
     val testY = y[Slice(limit, total, 1)].toDimensionArray()
 
+    // Initialize model.
     val model = SequentialNetwork(
         loss = BinaryCrossEntropy,
         optimizer = StochasticGradientDescent(0.001F),
         accuracy = Categorical(isBinary = true, showConfusionMatrix = true)
     )
+
+    // Create layers 3 input values → 4 hidden neurons → 1 output neuron.
     model.addLayer(Dense(shape = Pair(3, 4), activation = ReLU))
     model.addLayer(Dense(shape = Pair(4, 1), activation = Sigmoid))
+
+    // Train model.
     model.fit(trainX, trainY, 10)
+
+    // Test model.
     model.evaluate(testX, testY)
 }
 
 /**
- *
+ * Generate data consisting of 3 Float values between -10 and 10. These are the features (x), the target (y) consists
+ * of byte representations of booleans whether the sum of these three Float values is positive or negative.
  */
 fun generateData(numOfEntries: Int) {
     x = mk.d3array(numOfEntries, 3, 1) { 0F }
