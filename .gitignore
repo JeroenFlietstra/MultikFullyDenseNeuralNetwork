@@ -1,0 +1,8 @@
+# Project exclude paths
+/.gradle/
+/build/
+/.idea/**.iws
+/.idea/workspace.xml
+/.idea/jarRepositories.xml
+/.idea/sonarIssues.xml
+/.idea/libraries-with-intellij-classes.xml
